@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
-import Player from '../components/Player';
+import Player from '../components/Player/Player';
 import { Search as SearchIcon, Bell, User } from 'lucide-react';
 import useMusicStore from '../store/useMusicStore';
 

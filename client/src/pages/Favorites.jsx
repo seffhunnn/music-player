@@ -3,11 +3,7 @@ import { motion } from 'framer-motion';
 import { Heart, Play, Clock } from 'lucide-react';
 import { mockSongs } from '../data/mockSongs';
 import useMusicStore from '../store/useMusicStore';
-import SongRow from './Library'; // I'll refactor this to be shared
-
-// Wait! I should move SongRow to components to avoid circular or weird imports.
-// Actually, I'll just create a shared Table component later. 
-// For now, I'll keep it simple and clean in Favorites.
+import SongRow from '../components/SongRow';
 
 const Favorites = () => {
   const { 
@@ -84,44 +80,16 @@ const Favorites = () => {
             </thead>
             <tbody className="divide-y divide-white/5">
               {likedSongs.map((song, index) => (
-                <tr 
-                  key={song.id} 
-                  onClick={() => { setCurrentSong(song); setQueue(likedSongs); }}
-                  className={`group hover:bg-white/5 transition-colors cursor-pointer ${currentSong?.id === song.id ? 'bg-indigo-500/10' : ''}`}
-                >
-                  <td className="px-8 py-5 text-slate-500 group-hover:text-white font-mono text-center">
-                    {currentSong?.id === song.id && isPlaying ? (
-                       <div className="flex items-end justify-center gap-[2px] h-4">
-                          <div className="equalizer-bar" style={{ animationDelay: '0s' }}></div>
-                          <div className="equalizer-bar" style={{ animationDelay: '0.2s' }}></div>
-                          <div className="equalizer-bar" style={{ animationDelay: '0.4s' }}></div>
-                       </div>
-                    ) : (
-                      String(index + 1).padStart(2, '0')
-                    )}
-                  </td>
-                  <td className="px-6 py-5">
-                    <div className="flex items-center gap-4">
-                      <img src={song.cover} alt={song.title} className="w-12 h-12 rounded-xl object-cover shadow-lg" loading="lazy" />
-                      <div>
-                        <p className={`font-black ${currentSong?.id === song.id ? 'text-indigo-400' : 'text-white'}`}>{song.title}</p>
-                        <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">{song.artist}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-5 text-slate-500 text-sm hidden md:table-cell font-medium">{song.album}</td>
-                  <td className="px-6 py-5 text-right pr-12">
-                     <div className="flex items-center justify-end gap-6 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button 
-                          onClick={(e) => { e.stopPropagation(); toggleFavorite(song.id); }}
-                          className="text-pink-500 hover:scale-120 transition-transform"
-                        >
-                          <Heart size={20} fill="currentColor" />
-                        </button>
-                        <span className="text-slate-500 text-xs font-mono font-bold">3:45</span>
-                     </div>
-                  </td>
-                </tr>
+                <SongRow 
+                  key={song.id}
+                  song={song}
+                  index={index}
+                  isActive={currentSong?.id === song.id}
+                  isPlaying={isPlaying}
+                  onPlay={(s) => { setCurrentSong(s); setQueue(likedSongs); }}
+                  isFavorite={favorites.includes(song.id)}
+                  onToggleFavorite={toggleFavorite}
+                />
               ))}
             </tbody>
           </table>
